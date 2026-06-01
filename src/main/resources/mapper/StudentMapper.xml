@@ -35,6 +35,14 @@
         SELECT * FROM students WHERE class_name = #{className} ORDER BY student_id DESC
     </select>
 
+    <select id="searchByMultipleFields" resultMap="studentResultMap">
+        SELECT * FROM students WHERE 1=1
+        <if test="studentNumber != null and studentNumber != ''">AND student_number LIKE CONCAT('%', #{studentNumber}, '%')</if>
+        <if test="name != null and name != ''">AND name LIKE CONCAT('%', #{name}, '%')</if>
+        <if test="className != null and className != ''">AND class_name LIKE CONCAT('%', #{className}, '%')</if>
+        ORDER BY student_id DESC
+    </select>
+
     <insert id="insert" parameterType="Student" useGeneratedKeys="true" keyProperty="studentId">
         INSERT INTO students (
             student_number,

@@ -29,6 +29,13 @@ public interface StudentMapper {
     List<Student> selectByClassName(@Param("className") String className);
 
     /**
+     * 多字段组合查询学生
+     */
+    List<Student> searchByMultipleFields(@Param("studentNumber") String studentNumber, 
+                                         @Param("name") String name, 
+                                         @Param("className") String className);
+
+    /**
      * 插入学生
      */
     int insert(Student student);

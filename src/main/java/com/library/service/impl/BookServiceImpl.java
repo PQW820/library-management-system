@@ -38,6 +38,16 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    public List<Book> searchBooks(String title, Integer categoryId) {
+        return bookMapper.selectByTitleAndCategory(title, categoryId);
+    }
+
+    @Override
+    public List<Book> searchBooks(String title, String isbn, String author, String press, Integer categoryId) {
+        return bookMapper.searchByMultipleFields(title, isbn, author, press, categoryId);
+    }
+
+    @Override
     public void addBook(Book book) {
         book.setCreatedAt(LocalDateTime.now());
         book.setUpdatedAt(LocalDateTime.now());

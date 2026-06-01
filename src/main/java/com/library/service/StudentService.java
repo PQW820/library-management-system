@@ -28,6 +28,11 @@ public interface StudentService {
     List<Student> getStudentsByClass(String className);
 
     /**
+     * 多字段组合查询学生
+     */
+    List<Student> searchStudents(String studentNumber, String name, String className);
+
+    /**
      * 添加学生
      */
     void addStudent(Student student);

@@ -13,6 +13,10 @@ export const studentApi = {
     return request.get(`/students/class/${className}`)
   },
 
+  searchStudents(studentNumber, name, className) {
+    return request.get('/students/search', { params: { studentNumber, name, className } })
+  },
+
   addStudent(data) {
     return request.post('/students', data)
   },

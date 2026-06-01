@@ -13,8 +13,8 @@ export const bookApi = {
     return request.get(`/books/category/${categoryId}`)
   },
 
-  searchBooks(title) {
-    return request.get('/books/search', { params: { title } })
+  searchBooks(title, isbn, author, press, categoryId) {
+    return request.get('/books/search', { params: { title, isbn, author, press, categoryId } })
   },
 
   addBook(data) {

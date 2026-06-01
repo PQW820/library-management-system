@@ -38,6 +38,11 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
+    public List<Student> searchStudents(String studentNumber, String name, String className) {
+        return studentMapper.searchByMultipleFields(studentNumber, name, className);
+    }
+
+    @Override
     public void addStudent(Student student) {
         student.setStatus(0);  // 默认正常状态
         student.setCreatedAt(LocalDateTime.now());

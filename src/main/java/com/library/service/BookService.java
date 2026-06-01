@@ -28,6 +28,16 @@ public interface BookService {
     List<Book> searchBooks(String title);
 
     /**
+     * 根据书名和分类组合查询图书
+     */
+    List<Book> searchBooks(String title, Integer categoryId);
+
+    /**
+     * 多字段组合查询图书
+     */
+    List<Book> searchBooks(String title, String isbn, String author, String press, Integer categoryId);
+
+    /**
      * 添加图书
      */
     void addBook(Book book);

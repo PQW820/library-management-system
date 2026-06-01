@@ -49,6 +49,18 @@ public class StudentController {
     }
 
     /**
+     * 多字段组合查询学生
+     */
+    @GetMapping("/search")
+    public ResponseResult<List<Student>> searchStudents(
+            @RequestParam(required = false) String studentNumber,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String className) {
+        List<Student> students = studentService.searchStudents(studentNumber, name, className);
+        return ResponseResult.success(students);
+    }
+
+    /**
      * 添加学生
      */
     @PostMapping

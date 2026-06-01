@@ -29,6 +29,18 @@ public interface BookMapper {
     List<Book> selectByTitle(@Param("title") String title);
 
     /**
+     * 根据书名和分类组合查询图书
+     */
+    List<Book> selectByTitleAndCategory(@Param("title") String title, @Param("categoryId") Integer categoryId);
+
+    /**
+     * 多字段组合查询图书
+     */
+    List<Book> searchByMultipleFields(@Param("title") String title, @Param("isbn") String isbn, 
+                                      @Param("author") String author, @Param("press") String press, 
+                                      @Param("categoryId") Integer categoryId);
+
+    /**
      * 插入图书
      */
     int insert(Book book);

@@ -16,20 +16,35 @@
           v-model="searchTitle"
           placeholder="搜索图书名称"
           clearable
-          style="width: 300px"
+          style="width: 200px"
           @keyup.enter="handleSearch"
-        >
-          <template #append>
-            <el-button @click="handleSearch">
-              <el-icon><Search /></el-icon>
-            </el-button>
-          </template>
-        </el-input>
+        />
+        <el-input
+          v-model="searchIsbn"
+          placeholder="ISBN"
+          clearable
+          style="width: 150px; margin-left: 10px"
+          @keyup.enter="handleSearch"
+        />
+        <el-input
+          v-model="searchAuthor"
+          placeholder="作者"
+          clearable
+          style="width: 120px; margin-left: 10px"
+          @keyup.enter="handleSearch"
+        />
+        <el-input
+          v-model="searchPress"
+          placeholder="出版社"
+          clearable
+          style="width: 150px; margin-left: 10px"
+          @keyup.enter="handleSearch"
+        />
         <el-select
           v-model="searchCategoryId"
           placeholder="选择分类"
           clearable
-          style="width: 200px; margin-left: 10px"
+          style="width: 150px; margin-left: 10px"
           @change="handleCategoryChange"
         >
           <el-option
@@ -39,7 +54,11 @@
             :value="category.categoryId"
           />
         </el-select>
-        <el-button @click="loadBooks" style="margin-left: 10px">重置</el-button>
+        <el-button type="primary" @click="handleSearch" style="margin-left: 10px">
+          <el-icon><Search /></el-icon>
+          搜索
+        </el-button>
+        <el-button @click="handleReset" style="margin-left: 10px">重置</el-button>
       </div>
 
       <el-table :data="books" stripe style="width: 100%; margin-top: 20px">
@@ -114,7 +133,10 @@
           </el-select>
         </el-form-item>
         <el-form-item label="总数" prop="totalNumber">
-          <el-input-number v-model="form.totalNumber" :min="1" style="width: 100%" />
+          <el-input-number v-model="form.totalNumber" :min="1" style="width: 100%" @change="handleTotalNumberChange" />
+        </el-form-item>
+        <el-form-item label="可借数量" prop="availableNumber">
+          <el-input-number v-model="form.availableNumber" :min="0" :max="form.totalNumber" style="width: 100%" />
         </el-form-item>
         <el-form-item label="描述" prop="description">
           <el-input
@@ -145,6 +167,9 @@ const dialogVisible = ref(false)
 const dialogTitle = ref('添加图书')
 const formRef = ref(null)
 const searchTitle = ref('')
+const searchIsbn = ref('')
+const searchAuthor = ref('')
+const searchPress = ref('')
 const searchCategoryId = ref(null)
 
 const form = reactive({
@@ -188,30 +213,32 @@ const loadCategories = async () => {
   }
 }
 
+const handleReset = () => {
+  searchTitle.value = ''
+  searchIsbn.value = ''
+  searchAuthor.value = ''
+  searchPress.value = ''
+  searchCategoryId.value = null
+  loadBooks()
+}
+
+const handleTotalNumberChange = () => {
+  if (form.availableNumber > form.totalNumber) {
+    form.availableNumber = form.totalNumber
+  }
+}
+
 const handleSearch = async () => {
-  if (searchTitle.value) {
-    try {
-      const res = await bookApi.searchBooks(searchTitle.value)
-      books.value = res.data
-    } catch (error) {
-      console.error('搜索失败:', error)
-    }
-  } else {
-    loadBooks()
+  try {
+    const res = await bookApi.searchBooks(searchTitle.value, searchIsbn.value, searchAuthor.value, searchPress.value, searchCategoryId.value)
+    books.value = res.data
+  } catch (error) {
+    console.error('搜索失败:', error)
   }
 }
 
 const handleCategoryChange = async () => {
-  if (searchCategoryId.value) {
-    try {
-      const res = await bookApi.getBooksByCategory(searchCategoryId.value)
-      books.value = res.data
-    } catch (error) {
-      console.error('加载分类图书失败:', error)
-    }
-  } else {
-    loadBooks()
-  }
+  await handleSearch()
 }
 
 const handleAdd = () => {

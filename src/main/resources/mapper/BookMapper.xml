@@ -36,6 +36,23 @@
         SELECT * FROM books WHERE title LIKE CONCAT('%', #{title}, '%') ORDER BY book_id DESC
     </select>
 
+    <select id="selectByTitleAndCategory" resultMap="bookResultMap">
+        SELECT * FROM books WHERE 1=1
+        <if test="title != null and title != ''">AND title LIKE CONCAT('%', #{title}, '%')</if>
+        <if test="categoryId != null">AND category_id = #{categoryId}</if>
+        ORDER BY book_id DESC
+    </select>
+
+    <select id="searchByMultipleFields" resultMap="bookResultMap">
+        SELECT * FROM books WHERE 1=1
+        <if test="title != null and title != ''">AND title LIKE CONCAT('%', #{title}, '%')</if>
+        <if test="isbn != null and isbn != ''">AND isbn LIKE CONCAT('%', #{isbn}, '%')</if>
+        <if test="author != null and author != ''">AND author LIKE CONCAT('%', #{author}, '%')</if>
+        <if test="press != null and press != ''">AND press LIKE CONCAT('%', #{press}, '%')</if>
+        <if test="categoryId != null">AND category_id = #{categoryId}</if>
+        ORDER BY book_id DESC
+    </select>
+
     <insert id="insert" parameterType="Book" useGeneratedKeys="true" keyProperty="bookId">
         INSERT INTO books (
             isbn,

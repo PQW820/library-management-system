@@ -49,11 +49,16 @@ public class BookController {
     }
 
     /**
-     * 搜索图书
+     * 搜索图书（支持多字段组合搜索）
      */
     @GetMapping("/search")
-    public ResponseResult<List<Book>> searchBooks(@RequestParam String title) {
-        List<Book> books = bookService.searchBooks(title);
+    public ResponseResult<List<Book>> searchBooks(
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String isbn,
+            @RequestParam(required = false) String author,
+            @RequestParam(required = false) String press,
+            @RequestParam(required = false) Integer categoryId) {
+        List<Book> books = bookService.searchBooks(title, isbn, author, press, categoryId);
         return ResponseResult.success(books);
     }
 

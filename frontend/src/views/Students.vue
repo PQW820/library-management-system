@@ -13,19 +13,31 @@
 
       <div class="search-bar">
         <el-input
-          v-model="searchClass"
-          placeholder="搜索班级"
+          v-model="searchStudentNumber"
+          placeholder="学号"
           clearable
-          style="width: 300px"
+          style="width: 120px"
           @keyup.enter="handleSearch"
-        >
-          <template #append>
-            <el-button @click="handleSearch">
-              <el-icon><Search /></el-icon>
-            </el-button>
-          </template>
-        </el-input>
-        <el-button @click="loadStudents" style="margin-left: 10px">重置</el-button>
+        />
+        <el-input
+          v-model="searchName"
+          placeholder="姓名"
+          clearable
+          style="width: 100px; margin-left: 10px"
+          @keyup.enter="handleSearch"
+        />
+        <el-input
+          v-model="searchClass"
+          placeholder="班级"
+          clearable
+          style="width: 120px; margin-left: 10px"
+          @keyup.enter="handleSearch"
+        />
+        <el-button type="primary" @click="handleSearch" style="margin-left: 10px">
+          <el-icon><Search /></el-icon>
+          搜索
+        </el-button>
+        <el-button @click="handleReset" style="margin-left: 10px">重置</el-button>
       </div>
 
       <el-table :data="students" stripe style="width: 100%; margin-top: 20px">
@@ -125,6 +137,8 @@ const students = ref([])
 const dialogVisible = ref(false)
 const dialogTitle = ref('添加学生')
 const formRef = ref(null)
+const searchStudentNumber = ref('')
+const searchName = ref('')
 const searchClass = ref('')
 
 const form = reactive({
@@ -163,16 +177,19 @@ const loadStudents = async () => {
 }
 
 const handleSearch = async () => {
-  if (searchClass.value) {
-    try {
-      const res = await studentApi.getStudentsByClass(searchClass.value)
-      students.value = res.data
-    } catch (error) {
-      console.error('搜索失败:', error)
-    }
-  } else {
-    loadStudents()
+  try {
+    const res = await studentApi.searchStudents(searchStudentNumber.value, searchName.value, searchClass.value)
+    students.value = res.data
+  } catch (error) {
+    console.error('搜索失败:', error)
   }
+}
+
+const handleReset = () => {
+  searchStudentNumber.value = ''
+  searchName.value = ''
+  searchClass.value = ''
+  loadStudents()
 }
 
 const handleAdd = () => {
