@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.library.mapper.BorrowRecordMapper">
+
+    <resultMap id="borrowRecordResultMap" type="BorrowRecord">
+        <id column="record_id" property="recordId"/>
+        <result column="student_id" property="studentId"/>
+        <result column="book_id" property="bookId"/>
+        <result column="borrow_date" property="borrowDate"/>
+        <result column="return_date" property="returnDate"/>
+        <result column="actual_return_date" property="actualReturnDate"/>
+        <result column="status" property="status"/>
+        <result column="remark" property="remark"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+    </resultMap>
+
+    <select id="selectAll" resultMap="borrowRecordResultMap">
+        SELECT * FROM borrow_records ORDER BY record_id DESC
+    </select>
+
+    <select id="selectById" parameterType="int" resultMap="borrowRecordResultMap">
+        SELECT * FROM borrow_records WHERE record_id = #{recordId}
+    </select>
+
+    <select id="selectByStudentId" parameterType="int" resultMap="borrowRecordResultMap">
+        SELECT * FROM borrow_records WHERE student_id = #{studentId} ORDER BY record_id DESC
+    </select>
+
+    <select id="selectByStudentIdAndStatus" resultMap="borrowRecordResultMap">
+        SELECT * FROM borrow_records
+        WHERE student_id = #{studentId} AND status = #{status}
+        ORDER BY record_id DESC
+    </select>
+
+    <select id="selectByBookId" parameterType="int" resultMap="borrowRecordResultMap">
+        SELECT * FROM borrow_records WHERE book_id = #{bookId} ORDER BY record_id DESC
+    </select>
+
+    <select id="selectUnreturned" resultMap="borrowRecordResultMap">
+        SELECT * FROM borrow_records WHERE status = '0' ORDER BY record_id DESC
+    </select>
+
+    <insert id="insert" parameterType="BorrowRecord" useGeneratedKeys="true" keyProperty="recordId">
+        INSERT INTO borrow_records (
+            student_id,
+            book_id,
+            borrow_date,
+            return_date,
+            actual_return_date,
+            status,
+            remark,
+            created_at,
+            updated_at
+        ) VALUES (
+            #{studentId},
+            #{bookId},
+            #{borrowDate},
+            #{returnDate},
+            #{actualReturnDate},
+            #{status},
+            #{remark},
+            #{createdAt},
+            #{updatedAt}
+        )
+    </insert>
+
+    <update id="update" parameterType="BorrowRecord">
+        UPDATE borrow_records SET
+            student_id = #{studentId},
+            book_id = #{bookId},
+            borrow_date = #{borrowDate},
+            return_date = #{returnDate},
+            actual_return_date = #{actualReturnDate},
+            status = #{status},
+            remark = #{remark},
+            updated_at = #{updatedAt}
+        WHERE record_id = #{recordId}
+    </update>
+
+    <delete id="delete" parameterType="int">
+        DELETE FROM borrow_records WHERE record_id = #{recordId}
+    </delete>
+
+</mapper>

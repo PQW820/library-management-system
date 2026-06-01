@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.library.mapper.StudentMapper">
+
+    <resultMap id="studentResultMap" type="Student">
+        <id column="student_id" property="studentId"/>
+        <result column="student_number" property="studentNumber"/>
+        <result column="name" property="name"/>
+        <result column="class_name" property="className"/>
+        <result column="gender" property="gender"/>
+        <result column="phone" property="phone"/>
+        <result column="email" property="email"/>
+        <result column="password" property="password"/>
+        <result column="status" property="status"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+    </resultMap>
+
+    <select id="selectAll" resultMap="studentResultMap">
+        SELECT * FROM students ORDER BY student_id DESC
+    </select>
+
+    <select id="selectById" parameterType="int" resultMap="studentResultMap">
+        SELECT * FROM students WHERE student_id = #{studentId}
+    </select>
+
+    <select id="selectByStudentNumber" parameterType="string" resultMap="studentResultMap">
+        SELECT * FROM students WHERE student_number = #{studentNumber}
+    </select>
+
+    <select id="selectByClassName" parameterType="string" resultMap="studentResultMap">
+        SELECT * FROM students WHERE class_name = #{className} ORDER BY student_id DESC
+    </select>
+
+    <insert id="insert" parameterType="Student" useGeneratedKeys="true" keyProperty="studentId">
+        INSERT INTO students (
+            student_number,
+            name,
+            class_name,
+            gender,
+            phone,
+            email,
+            password,
+            status,
+            created_at,
+            updated_at
+        ) VALUES (
+            #{studentNumber},
+            #{name},
+            #{className},
+            #{gender},
+            #{phone},
+            #{email},
+            #{password},
+            #{status},
+            #{createdAt},
+            #{updatedAt}
+        )
+    </insert>
+
+    <update id="update" parameterType="Student">
+        UPDATE students SET
+            student_number = #{studentNumber},
+            name = #{name},
+            class_name = #{className},
+            gender = #{gender},
+            phone = #{phone},
+            email = #{email},
+            password = #{password},
+            status = #{status},
+            updated_at = #{updatedAt}
+        WHERE student_id = #{studentId}
+    </update>
+
+    <delete id="delete" parameterType="int">
+        DELETE FROM students WHERE student_id = #{studentId}
+    </delete>
+
+</mapper>
