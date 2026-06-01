@@ -5,8 +5,16 @@ export const borrowApi = {
     return request.get('/borrows')
   },
 
+  getAllRecordsGrouped() {
+    return request.get('/borrows/grouped')
+  },
+
   getRecordsByStudent(studentId) {
     return request.get(`/borrows/student/${studentId}`)
+  },
+
+  getRecordsGroupedByStudent(studentId) {
+    return request.get(`/borrows/grouped/student/${studentId}`)
   },
 
   getUnreturnedBooks(studentId) {

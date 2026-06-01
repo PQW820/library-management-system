@@ -1,6 +1,7 @@
 package com.library.controller;
 
 import com.library.dto.BorrowRecordDTO;
+import com.library.dto.BorrowRecordGroupDTO;
 import com.library.dto.ResponseResult;
 import com.library.entity.BorrowRecord;
 import com.library.service.BorrowService;
@@ -52,6 +53,24 @@ public class BorrowController {
     @GetMapping("/overdue")
     public ResponseResult<List<BorrowRecordDTO>> getOverdueRecords() {
         List<BorrowRecordDTO> records = borrowService.getOverdueRecordsWithDetails();
+        return ResponseResult.success(records);
+    }
+
+    /**
+     * 获取所有借阅记录（归并后）
+     */
+    @GetMapping("/grouped")
+    public ResponseResult<List<BorrowRecordGroupDTO>> listRecordsGrouped() {
+        List<BorrowRecordGroupDTO> records = borrowService.getAllRecordsGrouped();
+        return ResponseResult.success(records);
+    }
+
+    /**
+     * 根据学生ID查询借阅记录（归并后）
+     */
+    @GetMapping("/grouped/student/{studentId}")
+    public ResponseResult<List<BorrowRecordGroupDTO>> getRecordsGroupedByStudent(@PathVariable Integer studentId) {
+        List<BorrowRecordGroupDTO> records = borrowService.getRecordsGroupedByStudentId(studentId);
         return ResponseResult.success(records);
     }
 

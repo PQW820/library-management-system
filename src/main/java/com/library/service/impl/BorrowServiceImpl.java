@@ -1,6 +1,7 @@
 package com.library.service.impl;
 
 import com.library.dto.BorrowRecordDTO;
+import com.library.dto.BorrowRecordGroupDTO;
 import com.library.entity.Book;
 import com.library.entity.BorrowRecord;
 import com.library.entity.Student;
@@ -14,7 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 借阅服务实现类
@@ -176,5 +179,32 @@ public class BorrowServiceImpl implements BorrowService {
             dtos.add(convertToDTO(record));
         }
         return dtos;
+    }
+
+    @Override
+    public List<BorrowRecordGroupDTO> getAllRecordsGrouped() {
+        List<BorrowRecordDTO> records = getAllRecordsWithDetails();
+        return groupRecords(records);
+    }
+
+    @Override
+    public List<BorrowRecordGroupDTO> getRecordsGroupedByStudentId(Integer studentId) {
+        List<BorrowRecordDTO> records = getRecordsByStudentIdWithDetails(studentId);
+        return groupRecords(records);
+    }
+
+    private List<BorrowRecordGroupDTO> groupRecords(List<BorrowRecordDTO> records) {
+        Map<String, BorrowRecordGroupDTO> groupMap = new HashMap<>();
+        
+        for (BorrowRecordDTO record : records) {
+            String key = record.getStudentId() + "_" + record.getBookId();
+            if (groupMap.containsKey(key)) {
+                groupMap.get(key).merge(record);
+            } else {
+                groupMap.put(key, new BorrowRecordGroupDTO(record));
+            }
+        }
+        
+        return new ArrayList<>(groupMap.values());
     }
 }

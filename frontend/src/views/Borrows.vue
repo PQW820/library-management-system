@@ -37,30 +37,27 @@
       </div>
 
       <el-table :data="records" stripe style="width: 100%; margin-top: 20px">
-        <el-table-column prop="recordId" label="ID" width="80" />
         <el-table-column prop="studentName" label="学生姓名" width="100" />
         <el-table-column prop="studentNumber" label="学号" width="120" />
         <el-table-column prop="bookTitle" label="图书名称" width="200" />
         <el-table-column prop="bookIsbn" label="ISBN" width="150" />
-        <el-table-column prop="borrowDate" label="借阅日期" width="120" />
-        <el-table-column prop="returnDate" label="应还日期" width="120" />
-        <el-table-column prop="actualReturnDate" label="实际还书日期" width="130" />
-        <el-table-column prop="status" label="状态" width="100">
+        <el-table-column prop="borrowCount" label="借阅次数" width="100" />
+        <el-table-column label="状态" width="100">
           <template #default="{ row }">
             <el-tag :type="getStatusType(row.status)">
               {{ getStatusText(row.status) }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="120" fixed="right">
+        <el-table-column label="操作" width="150" fixed="right">
           <template #default="{ row }">
             <el-button
               v-if="row.status === '0'"
               type="success"
               size="small"
-              @click="handleReturn(row)"
+              @click="handleReturnAll(row)"
             >
-              还书
+              全部还书
             </el-button>
             <span v-else style="color: #999">已归还</span>
           </template>
@@ -146,7 +143,7 @@ const borrowRules = {
 
 const loadRecords = async () => {
   try {
-    const res = await borrowApi.getAllRecords()
+    const res = await borrowApi.getAllRecordsGrouped()
     records.value = res.data
   } catch (error) {
     console.error('加载借阅记录失败:', error)
@@ -174,7 +171,7 @@ const loadAvailableBooks = async () => {
 const handleStudentChange = async () => {
   if (selectedStudent.value) {
     try {
-      const res = await borrowApi.getRecordsByStudent(selectedStudent.value)
+      const res = await borrowApi.getRecordsGroupedByStudent(selectedStudent.value)
       records.value = res.data
     } catch (error) {
       console.error('加载学生借阅记录失败:', error)
@@ -196,6 +193,9 @@ const loadOverdueRecords = async () => {
 
 const handleBorrow = () => {
   loadAvailableBooks()
+  if (selectedStudent.value) {
+    borrowForm.studentId = selectedStudent.value
+  }
   borrowDialogVisible.value = true
 }
 
@@ -216,18 +216,27 @@ const handleBorrowSubmit = async () => {
   })
 }
 
-const handleReturn = (row) => {
-  ElMessageBox.confirm('确定要归还该图书吗?', '提示', {
+const handleReturnAll = (row) => {
+  const unreturnedRecords = row.records?.filter(r => r.status === '0') || []
+  if (unreturnedRecords.length === 0) {
+    ElMessage.warning('没有需要归还的图书')
+    return
+  }
+  
+  ElMessageBox.confirm(`确定要归还 ${unreturnedRecords.length} 本图书吗?`, '提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
   }).then(async () => {
     try {
-      await borrowApi.returnBook(row.recordId)
-      ElMessage.success('还书成功')
+      for (const record of unreturnedRecords) {
+        await borrowApi.returnBook(record.recordId)
+      }
+      ElMessage.success(`成功归还 ${unreturnedRecords.length} 本图书`)
       loadRecords()
     } catch (error) {
       console.error('还书失败:', error)
+      ElMessage.error('还书失败')
     }
   }).catch(() => {})
 }

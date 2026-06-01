@@ -1,6 +1,7 @@
 package com.library.service;
 
 import com.library.dto.BorrowRecordDTO;
+import com.library.dto.BorrowRecordGroupDTO;
 import com.library.entity.BorrowRecord;
 import java.util.List;
 
@@ -57,4 +58,14 @@ public interface BorrowService {
      * 获取所有超期未归还的记录（含详情）
      */
     List<BorrowRecordDTO> getOverdueRecordsWithDetails();
+
+    /**
+     * 获取所有借阅记录（归并后，同一学生借同一本书的记录合并显示）
+     */
+    List<BorrowRecordGroupDTO> getAllRecordsGrouped();
+
+    /**
+     * 根据学生ID获取借阅记录（归并后）
+     */
+    List<BorrowRecordGroupDTO> getRecordsGroupedByStudentId(Integer studentId);
 }
