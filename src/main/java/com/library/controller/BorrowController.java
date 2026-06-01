@@ -1,5 +1,6 @@
 package com.library.controller;
 
+import com.library.dto.BorrowRecordDTO;
 import com.library.dto.ResponseResult;
 import com.library.entity.BorrowRecord;
 import com.library.service.BorrowService;
@@ -19,20 +20,20 @@ public class BorrowController {
     private BorrowService borrowService;
 
     /**
-     * 获取所有借阅记录
+     * 获取所有借阅记录（含详情）
      */
     @GetMapping
-    public ResponseResult<List<BorrowRecord>> listRecords() {
-        List<BorrowRecord> records = borrowService.getAllRecords();
+    public ResponseResult<List<BorrowRecordDTO>> listRecords() {
+        List<BorrowRecordDTO> records = borrowService.getAllRecordsWithDetails();
         return ResponseResult.success(records);
     }
 
     /**
-     * 根据学生ID查询借阅记录
+     * 根据学生ID查询借阅记录（含详情）
      */
     @GetMapping("/student/{studentId}")
-    public ResponseResult<List<BorrowRecord>> getRecordsByStudent(@PathVariable Integer studentId) {
-        List<BorrowRecord> records = borrowService.getRecordsByStudentId(studentId);
+    public ResponseResult<List<BorrowRecordDTO>> getRecordsByStudent(@PathVariable Integer studentId) {
+        List<BorrowRecordDTO> records = borrowService.getRecordsByStudentIdWithDetails(studentId);
         return ResponseResult.success(records);
     }
 
@@ -46,11 +47,11 @@ public class BorrowController {
     }
 
     /**
-     * 获取所有超期未归还的记录
+     * 获取所有超期未归还的记录（含详情）
      */
     @GetMapping("/overdue")
-    public ResponseResult<List<BorrowRecord>> getOverdueRecords() {
-        List<BorrowRecord> records = borrowService.getOverdueRecords();
+    public ResponseResult<List<BorrowRecordDTO>> getOverdueRecords() {
+        List<BorrowRecordDTO> records = borrowService.getOverdueRecordsWithDetails();
         return ResponseResult.success(records);
     }
 

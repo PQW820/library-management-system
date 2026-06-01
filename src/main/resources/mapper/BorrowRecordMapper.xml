@@ -45,39 +45,17 @@
     </select>
 
     <insert id="insert" parameterType="BorrowRecord" useGeneratedKeys="true" keyProperty="recordId">
-        INSERT INTO borrow_records (
-            student_id,
-            book_id,
-            borrow_date,
-            return_date,
-            actual_return_date,
-            status,
-            remark,
-            created_at,
-            updated_at
-        ) VALUES (
-            #{studentId},
-            #{bookId},
-            #{borrowDate},
-            #{returnDate},
-            #{actualReturnDate},
-            #{status},
-            #{remark},
-            #{createdAt},
-            #{updatedAt}
-        )
+        INSERT INTO borrow_records (student_id, book_id, borrow_date, return_date,
+            actual_return_date, status, remark, created_at, updated_at)
+        VALUES (#{studentId}, #{bookId}, #{borrowDate}, #{returnDate},
+            #{actualReturnDate}, #{status}, #{remark}, #{createdAt}, #{updatedAt})
     </insert>
 
     <update id="update" parameterType="BorrowRecord">
         UPDATE borrow_records SET
-            student_id = #{studentId},
-            book_id = #{bookId},
-            borrow_date = #{borrowDate},
-            return_date = #{returnDate},
-            actual_return_date = #{actualReturnDate},
-            status = #{status},
-            remark = #{remark},
-            updated_at = #{updatedAt}
+            student_id = #{studentId}, book_id = #{bookId}, borrow_date = #{borrowDate},
+            return_date = #{returnDate}, actual_return_date = #{actualReturnDate},
+            status = #{status}, remark = #{remark}, updated_at = #{updatedAt}
         WHERE record_id = #{recordId}
     </update>
 

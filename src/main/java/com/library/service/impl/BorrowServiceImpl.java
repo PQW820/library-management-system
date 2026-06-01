@@ -1,15 +1,19 @@
 package com.library.service.impl;
 
+import com.library.dto.BorrowRecordDTO;
 import com.library.entity.Book;
 import com.library.entity.BorrowRecord;
+import com.library.entity.Student;
 import com.library.mapper.BookMapper;
 import com.library.mapper.BorrowRecordMapper;
+import com.library.mapper.StudentMapper;
 import com.library.service.BorrowService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,9 +28,50 @@ public class BorrowServiceImpl implements BorrowService {
     @Autowired
     private BookMapper bookMapper;
 
+    @Autowired
+    private StudentMapper studentMapper;
+
     @Override
     public List<BorrowRecord> getAllRecords() {
         return borrowRecordMapper.selectAll();
+    }
+
+    private BorrowRecordDTO convertToDTO(BorrowRecord record) {
+        BorrowRecordDTO dto = new BorrowRecordDTO();
+        dto.setRecordId(record.getRecordId());
+        dto.setStudentId(record.getStudentId());
+        dto.setBookId(record.getBookId());
+        dto.setBorrowDate(record.getBorrowDate());
+        dto.setReturnDate(record.getReturnDate());
+        dto.setActualReturnDate(record.getActualReturnDate());
+        dto.setStatus(record.getStatus());
+        dto.setRemark(record.getRemark());
+        
+        // 查询学生信息
+        Student student = studentMapper.selectById(record.getStudentId());
+        if (student != null) {
+            dto.setStudentName(student.getName());
+            dto.setStudentNumber(student.getStudentNumber());
+        }
+        
+        // 查询图书信息
+        Book book = bookMapper.selectById(record.getBookId());
+        if (book != null) {
+            dto.setBookTitle(book.getTitle());
+            dto.setBookIsbn(book.getIsbn());
+        }
+        
+        return dto;
+    }
+
+    @Override
+    public List<BorrowRecordDTO> getAllRecordsWithDetails() {
+        List<BorrowRecord> records = borrowRecordMapper.selectAll();
+        List<BorrowRecordDTO> dtos = new ArrayList<>();
+        for (BorrowRecord record : records) {
+            dtos.add(convertToDTO(record));
+        }
+        return dtos;
     }
 
     @Override
@@ -37,6 +82,16 @@ public class BorrowServiceImpl implements BorrowService {
     @Override
     public List<BorrowRecord> getRecordsByStudentId(Integer studentId) {
         return borrowRecordMapper.selectByStudentId(studentId);
+    }
+
+    @Override
+    public List<BorrowRecordDTO> getRecordsByStudentIdWithDetails(Integer studentId) {
+        List<BorrowRecord> records = borrowRecordMapper.selectByStudentId(studentId);
+        List<BorrowRecordDTO> dtos = new ArrayList<>();
+        for (BorrowRecord record : records) {
+            dtos.add(convertToDTO(record));
+        }
+        return dtos;
     }
 
     @Override
@@ -111,5 +166,15 @@ public class BorrowServiceImpl implements BorrowService {
         LocalDate now = LocalDate.now();
         records.removeIf(record -> !now.isAfter(record.getReturnDate()));
         return records;
+    }
+
+    @Override
+    public List<BorrowRecordDTO> getOverdueRecordsWithDetails() {
+        List<BorrowRecord> records = getOverdueRecords();
+        List<BorrowRecordDTO> dtos = new ArrayList<>();
+        for (BorrowRecord record : records) {
+            dtos.add(convertToDTO(record));
+        }
+        return dtos;
     }
 }

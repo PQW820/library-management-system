@@ -1,5 +1,6 @@
 package com.library.service;
 
+import com.library.dto.BorrowRecordDTO;
 import com.library.entity.BorrowRecord;
 import java.util.List;
 
@@ -13,6 +14,11 @@ public interface BorrowService {
     List<BorrowRecord> getAllRecords();
 
     /**
+     * 查询所有借阅记录（含详情）
+     */
+    List<BorrowRecordDTO> getAllRecordsWithDetails();
+
+    /**
      * 根据ID查询借阅记录
      */
     BorrowRecord getRecordById(Integer recordId);
@@ -21,6 +27,11 @@ public interface BorrowService {
      * 根据学生ID查询借阅记录
      */
     List<BorrowRecord> getRecordsByStudentId(Integer studentId);
+
+    /**
+     * 根据学生ID查询借阅记录（含详情）
+     */
+    List<BorrowRecordDTO> getRecordsByStudentIdWithDetails(Integer studentId);
 
     /**
      * 获取学生未归还的图书
@@ -41,4 +52,9 @@ public interface BorrowService {
      * 获取所有超期未归还的记录
      */
     List<BorrowRecord> getOverdueRecords();
+
+    /**
+     * 获取所有超期未归还的记录（含详情）
+     */
+    List<BorrowRecordDTO> getOverdueRecordsWithDetails();
 }
