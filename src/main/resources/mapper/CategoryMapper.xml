@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.library.mapper.CategoryMapper">
+
+    <resultMap id="categoryResultMap" type="Category">
+        <id column="category_id" property="categoryId"/>
+        <result column="name" property="name"/>
+        <result column="description" property="description"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+    </resultMap>
+
+    <select id="selectAll" resultMap="categoryResultMap">
+        SELECT * FROM categories ORDER BY category_id DESC
+    </select>
+
+    <select id="selectById" parameterType="int" resultMap="categoryResultMap">
+        SELECT * FROM categories WHERE category_id = #{categoryId}
+    </select>
+
+    <insert id="insert" parameterType="Category" useGeneratedKeys="true" keyProperty="categoryId">
+        INSERT INTO categories (name, description, created_at, updated_at)
+        VALUES (#{name}, #{description}, #{createdAt}, #{updatedAt})
+    </insert>
+
+    <update id="update" parameterType="Category">
+        UPDATE categories SET
+            name = #{name},
+            description = #{description},
+            updated_at = #{updatedAt}
+        WHERE category_id = #{categoryId}
+    </update>
+
+    <delete id="delete" parameterType="int">
+        DELETE FROM categories WHERE category_id = #{categoryId}
+    </delete>
+
+</mapper>

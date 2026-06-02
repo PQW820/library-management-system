@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.library.mapper.BookMapper">
+
+    <resultMap id="bookResultMap" type="Book">
+        <id column="book_id" property="bookId"/>
+        <result column="isbn" property="isbn"/>
+        <result column="title" property="title"/>
+        <result column="author" property="author"/>
+        <result column="press" property="press"/>
+        <result column="publish_date" property="publishDate"/>
+        <result column="category_id" property="categoryId"/>
+        <result column="total_number" property="totalNumber"/>
+        <result column="available_number" property="availableNumber"/>
+        <result column="description" property="description"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+    </resultMap>
+
+    <select id="selectAll" resultMap="bookResultMap">
+        SELECT * FROM books ORDER BY book_id DESC
+    </select>
+
+    <select id="selectById" parameterType="int" resultMap="bookResultMap">
+        SELECT * FROM books WHERE book_id = #{bookId}
+    </select>
+
+    <select id="selectByCategoryId" parameterType="int" resultMap="bookResultMap">
+        SELECT * FROM books WHERE category_id = #{categoryId} ORDER BY book_id DESC
+    </select>
+
+    <select id="selectByIsbn" parameterType="string" resultMap="bookResultMap">
+        SELECT * FROM books WHERE REPLACE(isbn, '-', '') = REPLACE(#{isbn}, '-', '')
+    </select>
+
+    <select id="selectByTitle" parameterType="string" resultMap="bookResultMap">
+        SELECT * FROM books WHERE title LIKE CONCAT('%', #{title}, '%') ORDER BY book_id DESC
+    </select>
+
+    <select id="selectByTitleAndCategory" resultMap="bookResultMap">
+        SELECT * FROM books WHERE 1=1
+        <if test="title != null and title != ''">AND title LIKE CONCAT('%', #{title}, '%')</if>
+        <if test="categoryId != null">AND category_id = #{categoryId}</if>
+        ORDER BY book_id DESC
+    </select>
+
+    <select id="searchByMultipleFields" resultMap="bookResultMap">
+        SELECT * FROM books WHERE 1=1
+        <if test="title != null and title != ''">AND title LIKE CONCAT('%', #{title}, '%')</if>
+        <if test="isbn != null and isbn != ''">AND isbn LIKE CONCAT('%', #{isbn}, '%')</if>
+        <if test="author != null and author != ''">AND author LIKE CONCAT('%', #{author}, '%')</if>
+        <if test="press != null and press != ''">AND press LIKE CONCAT('%', #{press}, '%')</if>
+        <if test="categoryId != null">AND category_id = #{categoryId}</if>
+        ORDER BY book_id DESC
+    </select>
+
+    <insert id="insert" parameterType="Book" useGeneratedKeys="true" keyProperty="bookId">
+        INSERT INTO books (
+            isbn,
+            title,
+            author,
+            press,
+            publish_date,
+            category_id,
+            total_number,
+            available_number,
+            description,
+            created_at,
+            updated_at
+        ) VALUES (
+            #{isbn},
+            #{title},
+            #{author},
+            #{press},
+            #{publishDate},
+            #{categoryId},
+            #{totalNumber},
+            #{availableNumber},
+            #{description},
+            #{createdAt},
+            #{updatedAt}
+        )
+    </insert>
+
+    <update id="update" parameterType="Book">
+        UPDATE books SET
+            isbn = #{isbn},
+            title = #{title},
+            author = #{author},
+            press = #{press},
+            publish_date = #{publishDate},
+            category_id = #{categoryId},
+            total_number = #{totalNumber},
+            available_number = #{availableNumber},
+            description = #{description},
+            updated_at = #{updatedAt}
+        WHERE book_id = #{bookId}
+    </update>
+
+    <delete id="delete" parameterType="int">
+        DELETE FROM books WHERE book_id = #{bookId}
+    </delete>
+
+    <update id="updateAvailableNumber">
+        UPDATE books SET available_number = available_number + #{count} WHERE book_id = #{bookId}
+    </update>
+
+</mapper>
