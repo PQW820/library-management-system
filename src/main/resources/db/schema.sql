@@ -2,6 +2,19 @@
 CREATE DATABASE IF NOT EXISTS library_system DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE library_system;
 
+-- 管理员表
+CREATE TABLE IF NOT EXISTS admins (
+    admin_id INT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    email VARCHAR(100),
+    phone VARCHAR(15),
+    status INT DEFAULT 1 COMMENT '0:禁用,1:启用',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_username (username)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='管理员表';
+
 -- 分类表
 CREATE TABLE IF NOT EXISTS categories (
     category_id INT PRIMARY KEY AUTO_INCREMENT,

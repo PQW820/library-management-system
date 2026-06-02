@@ -69,12 +69,20 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public void addBook(Book book) {
-        book.setCreatedAt(LocalDateTime.now());
-        book.setUpdatedAt(LocalDateTime.now());
-        if (book.getAvailableNumber() == null) {
-            book.setAvailableNumber(book.getTotalNumber());
+        Book existingBook = bookMapper.selectByIsbn(book.getIsbn());
+        if (existingBook != null) {
+            existingBook.setTotalNumber(existingBook.getTotalNumber() + book.getTotalNumber());
+            existingBook.setAvailableNumber(existingBook.getAvailableNumber() + book.getAvailableNumber());
+            existingBook.setUpdatedAt(LocalDateTime.now());
+            bookMapper.update(existingBook);
+        } else {
+            book.setCreatedAt(LocalDateTime.now());
+            book.setUpdatedAt(LocalDateTime.now());
+            if (book.getAvailableNumber() == null) {
+                book.setAvailableNumber(book.getTotalNumber());
+            }
+            bookMapper.insert(book);
         }
-        bookMapper.insert(book);
     }
 
     @Override

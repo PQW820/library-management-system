@@ -31,6 +31,13 @@
         <div class="header-content">
           <h2>{{ currentTitle }}</h2>
         </div>
+        <div class="header-right">
+          <span class="admin-name">欢迎, {{ adminName }}</span>
+          <el-button type="text" @click="handleLogout">
+            <el-icon><Logout /></el-icon>
+            退出登录
+          </el-button>
+        </div>
       </el-header>
       <el-main>
         <router-view />
@@ -42,6 +49,7 @@
 <script setup>
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
+import { ElMessage } from 'element-plus'
 
 const route = useRoute()
 
@@ -50,6 +58,23 @@ const activeMenu = computed(() => route.path)
 const currentTitle = computed(() => {
   return route.meta.title || '图书管理系统'
 })
+
+const adminName = computed(() => {
+  const admin = localStorage.getItem('admin')
+  if (admin) {
+    return JSON.parse(admin).username
+  }
+  return '管理员'
+})
+
+const handleLogout = () => {
+  localStorage.removeItem('admin')
+  localStorage.removeItem('isLogin')
+  ElMessage.success('已退出登录')
+  setTimeout(() => {
+    window.location.href = '/login'
+  }, 1000)
+}
 </script>
 
 <style scoped>
@@ -82,12 +107,24 @@ const currentTitle = computed(() => {
   border-bottom: 1px solid #e6e6e6;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding: 0 20px;
 }
 
 .header-content h2 {
   font-size: 20px;
   color: #333;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.admin-name {
+  color: #666;
+  font-size: 14px;
 }
 
 .el-main {

@@ -8,6 +8,11 @@ spring:
       force: true
       enabled: true
 
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:db/admin.sql
+
   datasource:
     url: jdbc:mysql://localhost:3306/library_system?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
     username: root

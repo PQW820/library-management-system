@@ -236,7 +236,7 @@ const handleIsbnBlur = async () => {
   if (!form.isbn.trim()) return
   
   try {
-    ElMessage.info('正在识别图书信息...')
+    ElMessage.info('正在检查图书信息...')
     const res = await bookApi.getBookByIsbn(form.isbn)
     if (res && res.data) {
       const book = res.data
@@ -247,18 +247,17 @@ const handleIsbnBlur = async () => {
       form.press = book.press || ''
       form.publishDate = book.publishDate || ''
       form.categoryId = book.categoryId || null
-      form.totalNumber = book.totalNumber || 1
-      form.availableNumber = book.availableNumber || 1
       form.description = book.description || ''
+      form.totalNumber = 1
+      form.availableNumber = 1
       setTimeout(() => {
-        ElMessage.success('已自动识别图书信息')
+        ElMessage.info('该图书已存在，添加后将增加数量')
       }, 100)
     } else {
-      ElMessage.info('未找到该 ISBN 对应的图书信息')
+      ElMessage.info('未找到该 ISBN 对应的图书信息，将作为新图书添加')
     }
   } catch (error) {
-    console.error('ISBN识别失败:', error)
-    ElMessage.error('识别失败，请稍后重试')
+    console.error('ISBN检查失败:', error)
   }
 }
 
@@ -314,7 +313,7 @@ const handleSubmit = async () => {
         } else {
           form.availableNumber = form.totalNumber
           await bookApi.addBook(form)
-          ElMessage.success('添加成功')
+          ElMessage.success('添加成功，图书数量已更新')
         }
         dialogVisible.value = false
         loadBooks()

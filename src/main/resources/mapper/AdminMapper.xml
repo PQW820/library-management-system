@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.library.mapper.AdminMapper">
+
+    <resultMap id="adminResultMap" type="Admin">
+        <id column="admin_id" property="adminId"/>
+        <result column="username" property="username"/>
+        <result column="password" property="password"/>
+        <result column="email" property="email"/>
+        <result column="phone" property="phone"/>
+        <result column="status" property="status"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+    </resultMap>
+
+    <select id="selectByUsername" parameterType="string" resultMap="adminResultMap">
+        SELECT * FROM admins WHERE username = #{username}
+    </select>
+
+    <select id="selectById" parameterType="int" resultMap="adminResultMap">
+        SELECT * FROM admins WHERE admin_id = #{adminId}
+    </select>
+
+    <insert id="insert" parameterType="Admin" useGeneratedKeys="true" keyProperty="adminId">
+        INSERT INTO admins (username, password, email, phone, status, created_at, updated_at)
+        VALUES (#{username}, #{password}, #{email}, #{phone}, #{status}, #{createdAt}, #{updatedAt})
+    </insert>
+
+    <update id="update" parameterType="Admin">
+        UPDATE admins SET
+            username = #{username},
+            password = #{password},
+            email = #{email},
+            phone = #{phone},
+            status = #{status},
+            updated_at = #{updatedAt}
+        WHERE admin_id = #{adminId}
+    </update>
+
+    <delete id="delete" parameterType="int">
+        DELETE FROM admins WHERE admin_id = #{adminId}
+    </delete>
+
+    <select id="countByUsername" parameterType="string" resultType="int">
+        SELECT COUNT(*) FROM admins WHERE username = #{username}
+    </select>
+
+</mapper>
