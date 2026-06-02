@@ -143,6 +143,10 @@ const borrowDialogVisible = ref(false)
 const borrowFormRef = ref(null)
 const selectedStudent = ref(null)
 
+const currentPage = ref(1)
+const pageSize = ref(10)
+const total = ref(0)
+
 const borrowForm = reactive({
   studentId: null,
   bookId: null
@@ -152,10 +156,6 @@ const borrowRules = {
   studentId: [{ required: true, message: '请选择学生', trigger: 'change' }],
   bookId: [{ required: true, message: '请选择图书', trigger: 'change' }]
 }
-
-const currentPage = ref(1)
-const pageSize = ref(10)
-const total = ref(0)
 
 const loadRecords = async (page = 1, size = 10, studentId = null) => {
   try {

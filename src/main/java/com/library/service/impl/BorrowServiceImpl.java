@@ -218,21 +218,4 @@ public class BorrowServiceImpl implements BorrowService {
     public int getRecordsCount(Integer studentId) {
         return borrowRecordMapper.selectCount(studentId);
     }
-
-    /**
-     * 分页查询借阅记录（归并后）
-     */
-    public List<BorrowRecordGroupDTO> getRecordsGroupedByPage(Integer studentId, Integer page, Integer size) {
-        List<BorrowRecordDTO> records = getRecordsWithDetailsByPage(studentId, page, size);
-        return groupRecords(records);
-    }
-
-    /**
-     * 查询归并后的借阅记录总数（按学生+图书分组）
-     */
-    public int getRecordsGroupedCount(Integer studentId) {
-        List<BorrowRecordDTO> records = studentId != null ? 
-            getRecordsByStudentIdWithDetails(studentId) : getAllRecordsWithDetails();
-        return groupRecords(records).size();
-    }
 }
