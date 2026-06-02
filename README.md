@@ -9,6 +9,7 @@
 - 👥 **学生管理** - 学生信息管理、班级分类
 - 📖 **借阅管理** - 借书、还书、超期提醒
 - 🔍 **数据查询** - 强大的查询和搜索功能
+- 🔐 **管理员认证** - 管理员注册、登录、验证码验证
 - 🏗️ **优雅的架构** - 分层设计，代码结构清晰
 
 ## 技术栈
@@ -30,27 +31,32 @@ library-management-system/
 │   │   ├── BookController.java
 │   │   ├── StudentController.java
 │   │   ├── BorrowController.java
-│   │   └── CategoryController.java
+│   │   ├── CategoryController.java
+│   │   └── AdminController.java
 │   ├── service/             # 业务接口
 │   │   ├── BookService.java
 │   │   ├── StudentService.java
 │   │   ├── BorrowService.java
-│   │   └── CategoryService.java
+│   │   ├── CategoryService.java
+│   │   └── AdminService.java
 │   ├── service/impl/        # 业务实现
 │   │   ├── BookServiceImpl.java
 │   │   ├── StudentServiceImpl.java
 │   │   ├── BorrowServiceImpl.java
-│   │   └── CategoryServiceImpl.java
+│   │   ├── CategoryServiceImpl.java
+│   │   └── AdminServiceImpl.java
 │   ├── mapper/              # MyBatis Mapper
 │   │   ├── BookMapper.java
 │   │   ├── StudentMapper.java
 │   │   ├── BorrowRecordMapper.java
-│   │   └── CategoryMapper.java
+│   │   ├── CategoryMapper.java
+│   │   └── AdminMapper.java
 │   ├── entity/              # 实体类
 │   │   ├── Book.java
 │   │   ├── Student.java
 │   │   ├── BorrowRecord.java
-│   │   └── Category.java
+│   │   ├── Category.java
+│   │   └── Admin.java
 │   ├── dto/                 # 数据传输对象
 │   │   └── ResponseResult.java
 │   └── LibraryApplication.java
@@ -59,7 +65,8 @@ library-management-system/
 │   │   ├── BookMapper.xml
 │   │   ├── StudentMapper.xml
 │   │   ├── BorrowRecordMapper.xml
-│   │   └── CategoryMapper.xml
+│   │   ├── CategoryMapper.xml
+│   │   └── AdminMapper.xml
 │   ├── db/
 │   │   └── schema.sql       # 数据库初始化脚本
 │   └── application.yml      # 应用配置
@@ -245,6 +252,51 @@ Content-Type: application/json
 }
 ```
 
+### 管理员管理
+
+#### 管理员注册
+```
+POST /api/admin/register
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "password123",
+  "confirmPassword": "password123",
+  "email": "admin@example.com",
+  "phone": "13800000000",
+  "captcha": "ABCD"
+}
+```
+
+#### 管理员登录
+```
+POST /api/admin/login
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "password123",
+  "captcha": "ABCD"
+}
+```
+
+#### 获取验证码
+```
+GET /api/admin/captcha
+```
+返回验证码图片，验证码存储在Session中
+
+#### 检查用户名是否存在
+```
+GET /api/admin/check-username?username=admin
+```
+
+#### 管理员退出登录
+```
+POST /api/admin/logout
+```
+
 ## 核心功能说明
 
 ### 借书流程
@@ -297,6 +349,9 @@ borrow_records (借阅记录)
     │ (N:1)
     │
 students (学生)
+
+admins (管理员)
+    管理员账户信息，独立于学生表
 ```
 
 ## 常见问题
@@ -346,4 +401,4 @@ MIT License
 
 ---
 
-**最后更新**: 2026年06月01日
+**最后更新**: 2026年06月03日
