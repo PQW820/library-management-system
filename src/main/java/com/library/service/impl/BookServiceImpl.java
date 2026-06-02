@@ -3,6 +3,8 @@ package com.library.service.impl;
 import com.library.entity.Book;
 import com.library.mapper.BookMapper;
 import com.library.service.BookService;
+import com.library.service.DoubanBookService;
+import com.library.service.LocalBookDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
@@ -16,6 +18,12 @@ public class BookServiceImpl implements BookService {
 
     @Autowired
     private BookMapper bookMapper;
+    
+    @Autowired
+    private DoubanBookService doubanBookService;
+    
+    @Autowired
+    private LocalBookDataService localBookDataService;
 
     @Override
     public List<Book> getAllBooks() {
@@ -30,6 +38,18 @@ public class BookServiceImpl implements BookService {
     @Override
     public List<Book> getBooksByCategory(Integer categoryId) {
         return bookMapper.selectByCategoryId(categoryId);
+    }
+
+    @Override
+    public Book getBookByIsbn(String isbn) {
+        Book book = bookMapper.selectByIsbn(isbn);
+        if (book == null) {
+            book = localBookDataService.searchBookByIsbn(isbn);
+        }
+        if (book == null) {
+            book = doubanBookService.searchBookByIsbn(isbn);
+        }
+        return book;
     }
 
     @Override

@@ -32,6 +32,10 @@
         SELECT * FROM books WHERE category_id = #{categoryId} ORDER BY book_id DESC
     </select>
 
+    <select id="selectByIsbn" parameterType="string" resultMap="bookResultMap">
+        SELECT * FROM books WHERE REPLACE(isbn, '-', '') = REPLACE(#{isbn}, '-', '')
+    </select>
+
     <select id="selectByTitle" parameterType="string" resultMap="bookResultMap">
         SELECT * FROM books WHERE title LIKE CONCAT('%', #{title}, '%') ORDER BY book_id DESC
     </select>

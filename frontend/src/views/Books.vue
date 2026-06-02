@@ -102,7 +102,11 @@
         label-width="100px"
       >
         <el-form-item label="ISBN" prop="isbn">
-          <el-input v-model="form.isbn" placeholder="请输入ISBN" />
+          <el-input 
+            v-model="form.isbn" 
+            placeholder="请输入ISBN，自动识别图书信息" 
+            @blur="handleIsbnBlur"
+          />
         </el-form-item>
         <el-form-item label="书名" prop="title">
           <el-input v-model="form.title" placeholder="请输入书名" />
@@ -225,6 +229,36 @@ const handleReset = () => {
 const handleTotalNumberChange = () => {
   if (form.availableNumber > form.totalNumber) {
     form.availableNumber = form.totalNumber
+  }
+}
+
+const handleIsbnBlur = async () => {
+  if (!form.isbn.trim()) return
+  
+  try {
+    ElMessage.info('正在识别图书信息...')
+    const res = await bookApi.getBookByIsbn(form.isbn)
+    if (res && res.data) {
+      const book = res.data
+      console.log('获取到图书信息:', book)
+      form.isbn = book.isbn || form.isbn
+      form.title = book.title || ''
+      form.author = book.author || ''
+      form.press = book.press || ''
+      form.publishDate = book.publishDate || ''
+      form.categoryId = book.categoryId || null
+      form.totalNumber = book.totalNumber || 1
+      form.availableNumber = book.availableNumber || 1
+      form.description = book.description || ''
+      setTimeout(() => {
+        ElMessage.success('已自动识别图书信息')
+      }, 100)
+    } else {
+      ElMessage.info('未找到该 ISBN 对应的图书信息')
+    }
+  } catch (error) {
+    console.error('ISBN识别失败:', error)
+    ElMessage.error('识别失败，请稍后重试')
   }
 }
 

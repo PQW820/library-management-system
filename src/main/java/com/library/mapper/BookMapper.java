@@ -24,6 +24,11 @@ public interface BookMapper {
     List<Book> selectByCategoryId(Integer categoryId);
 
     /**
+     * 根据ISBN查询图书
+     */
+    Book selectByIsbn(@Param("isbn") String isbn);
+
+    /**
      * 根据书名查询图书
      */
     List<Book> selectByTitle(@Param("title") String title);

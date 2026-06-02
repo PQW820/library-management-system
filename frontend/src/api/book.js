@@ -13,6 +13,10 @@ export const bookApi = {
     return request.get(`/books/category/${categoryId}`)
   },
 
+  getBookByIsbn(isbn) {
+    return request.get(`/books/isbn/${isbn}`)
+  },
+
   searchBooks(title, isbn, author, press, categoryId) {
     return request.get('/books/search', { params: { title, isbn, author, press, categoryId } })
   },

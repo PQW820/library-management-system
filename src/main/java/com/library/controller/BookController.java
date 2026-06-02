@@ -49,6 +49,18 @@ public class BookController {
     }
 
     /**
+     * 根据ISBN查询图书（用于自动识别）
+     */
+    @GetMapping("/isbn/{isbn}")
+    public ResponseResult<Book> getBookByIsbn(@PathVariable String isbn) {
+        Book book = bookService.getBookByIsbn(isbn);
+        if (book == null) {
+            return ResponseResult.error(404, "未找到该ISBN对应的图书");
+        }
+        return ResponseResult.success(book);
+    }
+
+    /**
      * 搜索图书（支持多字段组合搜索）
      */
     @GetMapping("/search")

@@ -23,6 +23,11 @@ public interface BookService {
     List<Book> getBooksByCategory(Integer categoryId);
 
     /**
+     * 根据ISBN查询图书
+     */
+    Book getBookByIsbn(String isbn);
+
+    /**
      * 根据书名查询图书
      */
     List<Book> searchBooks(String title);
